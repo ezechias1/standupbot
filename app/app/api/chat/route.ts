@@ -1,7 +1,18 @@
+/**
+ * api/chat/route.ts — The core RAG (Retrieval-Augmented Generation) endpoint.
+ *
+ * How it works:
+ * 1. Receive the full conversation history from the frontend
+ * 2. Search the document index for chunks relevant to the latest user question
+ * 3. Inject those chunks into the AI system prompt as grounding context
+ * 4. Stream the AI response back using Server-Sent Events (SSE)
+ * 5. Send source metadata first so the UI can show citation badges immediately
+ */
 import Groq from "groq-sdk";
 import { ensureIndexLoaded } from "@/lib/initIndex";
 import { search, buildSources } from "@/lib/search";
 
+// Groq client — uses Llama 3.3 70B which is free, fast, and very capable for Q&A
 const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req: Request) {
@@ -9,14 +20,20 @@ export async function POST(req: Request) {
     messages: Array<{ role: "user" | "assistant"; content: string }>;
   };
 
+  // Ensure the search index is hydrated before querying it
   ensureIndexLoaded();
 
+  // Extract the latest user message to use as the search query
   const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
   const query = lastUserMessage?.content ?? "";
 
+  // Find the 5 most relevant document chunks for this question
   const relevantChunks = search(query, 5);
+
+  // Build source references for the UI's citation badges
   const sources = buildSources(relevantChunks);
 
+  // Format the retrieved chunks as numbered context blocks for the prompt
   const context =
     relevantChunks.length > 0
       ? relevantChunks
@@ -24,6 +41,8 @@ export async function POST(req: Request) {
           .join("\n\n---\n\n")
       : null;
 
+  // System prompt grounds the AI in the retrieved documents.
+  // If no relevant docs were found, it tells the AI to admit it honestly.
   const systemPrompt = `You are an intelligent internal company assistant. You have access to company documents including HR policies, standard operating procedures, and general company information.
 
 ${
@@ -43,24 +62,28 @@ Guidelines:
 
   const encoder = new TextEncoder();
 
+  // Stream the response using a ReadableStream + Server-Sent Events.
+  // This lets the browser display text as it arrives word-by-word.
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        // Send sources metadata first
+        // Send source citations first — the UI shows badges before text starts
         controller.enqueue(
           encoder.encode(`data: ${JSON.stringify({ sources })}\n\n`)
         );
 
+        // Open a streaming connection to Groq / Llama 3.3
         const groqStream = await client.chat.completions.create({
           model: "llama-3.3-70b-versatile",
           max_tokens: 1024,
           stream: true,
           messages: [
             { role: "system", content: systemPrompt },
-            ...messages,
+            ...messages, // Include full conversation history for multi-turn context
           ],
         });
 
+        // Forward each text delta to the browser as it arrives
         for await (const chunk of groqStream) {
           const text = chunk.choices[0]?.delta?.content ?? "";
           if (text) {
@@ -70,6 +93,7 @@ Guidelines:
           }
         }
 
+        // Signal the frontend that the stream is finished
         controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         controller.close();
       } catch (err) {
