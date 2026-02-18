@@ -1,0 +1,94 @@
+ACME CORP — HUMAN RESOURCES POLICY HANDBOOK
+Last Updated: January 2025
+
+=== VACATION & TIME OFF ===
+
+Full-time employees accrue vacation at the following rates:
+- Years 0–2: 15 days per year (1.25 days/month)
+- Years 3–5: 20 days per year (1.67 days/month)
+- Years 6+: 25 days per year (2.08 days/month)
+
+Vacation requests must be submitted at least 2 weeks in advance through the HR portal (hr.acmecorp.internal). Requests are subject to manager approval. Unused vacation up to 10 days may be carried over to the next calendar year. Any unused days beyond 10 are forfeited on December 31st.
+
+SICK LEAVE
+All employees receive 10 sick days per year. Sick days do not carry over. A doctor's note is required for absences longer than 3 consecutive days.
+
+PARENTAL LEAVE
+Primary caregivers receive 16 weeks of fully paid parental leave. Secondary caregivers receive 6 weeks of fully paid parental leave. Leave must be taken within 12 months of birth or adoption.
+
+BEREAVEMENT LEAVE
+3 days for immediate family (spouse, parent, child, sibling). 1 day for extended family (grandparents, in-laws). Additional unpaid leave may be arranged with manager approval.
+
+=== CODE OF CONDUCT ===
+
+All employees are expected to:
+1. Treat colleagues, clients, and vendors with respect and professionalism.
+2. Maintain confidentiality of proprietary information at all times.
+3. Avoid conflicts of interest — disclose any outside employment or financial interests to HR.
+4. Report harassment, discrimination, or unethical behavior to hr@acmecorp.com or anonymously via the Ethics Hotline at 1-800-555-ETHICS.
+5. Follow the Acceptable Use Policy for company equipment and networks.
+
+Zero-tolerance policy: Harassment, discrimination based on protected characteristics, and workplace violence will result in immediate termination.
+
+=== PERFORMANCE REVIEWS ===
+
+Performance reviews are conducted twice per year:
+- Mid-Year Review: July (informal check-in, no rating)
+- Annual Review: December (formal rating, salary adjustment eligibility)
+
+Ratings use a 5-level scale: Exceptional, Exceeds Expectations, Meets Expectations, Needs Improvement, Unsatisfactory.
+
+Employees rated "Exceptional" or "Exceeds" are eligible for merit increases of 5–10%. Employees rated "Meets Expectations" may receive a cost-of-living adjustment (typically 2–3%).
+
+Employees rated "Needs Improvement" will be placed on a 90-day Performance Improvement Plan (PIP). Failure to meet PIP goals may result in termination.
+
+=== BENEFITS ===
+
+HEALTH INSURANCE
+Acme offers three plans through BlueCross BlueShield:
+- Bronze Plan: Employee pays $50/month. $2,500 individual deductible.
+- Silver Plan: Employee pays $150/month. $1,000 individual deductible.
+- Gold Plan: Employee pays $300/month. $500 individual deductible. Dental and vision included.
+
+Open enrollment runs November 1–15 each year.
+
+401(K) RETIREMENT PLAN
+Acme matches 100% of employee contributions up to 4% of salary. Vesting schedule: 25% per year, fully vested after 4 years.
+
+REMOTE WORK STIPEND
+All remote employees receive a $1,000 annual stipend for home office equipment, paid in January. Receipts must be submitted to finance@acmecorp.com within 60 days.
+
+GYM REIMBURSEMENT
+Employees may submit up to $600/year in gym membership reimbursements. Submit receipts to benefits@acmecorp.com with subject line "Gym Reimbursement."
+
+PROFESSIONAL DEVELOPMENT
+Employees receive a $2,000/year learning & development budget for courses, conferences, or books. Requests must be pre-approved by your manager. Submit via the L&D form in the HR portal.
+
+=== EXPENSE REPORTING ===
+
+All business expenses must be submitted within 30 days of being incurred.
+
+Submission process:
+1. Log in to the Expense Portal at expenses.acmecorp.internal
+2. Click "New Expense Report"
+3. Select the appropriate cost center and expense type
+4. Attach receipts for all items over $25
+5. Submit to your direct manager for approval
+6. Finance processes approved reports within 5 business days
+
+Per diem rates for travel:
+- Domestic: $75/day meals, $250/night hotel
+- International: $100/day meals, $350/night hotel
+
+Receipts are required for all hotel and airfare charges regardless of amount.
+
+=== REMOTE WORK POLICY ===
+
+Acme supports a hybrid work model. The default expectation is:
+- Engineering: Fully remote with optional office access
+- Sales & Customer Success: 2 days/week in office
+- Executive & Finance: 3 days/week in office
+
+Core working hours: 10 AM – 3 PM in your local timezone. All employees must be reachable via Slack during core hours. Meetings should be scheduled during core hours whenever possible.
+
+Team leads may set additional team-specific expectations. If you need to adjust your schedule temporarily, notify your manager via Slack.

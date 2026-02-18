@@ -35,7 +35,7 @@ export function removeDocChunks(docId: string) {
 
 export function search(query: string, topK = 5): DocumentChunk[] {
   if (!_index || _chunks.length === 0) return [];
-  const results = _index.search(query, { limit: topK });
+  const results = _index.search(query).slice(0, topK);
   return results as unknown as DocumentChunk[];
 }
 
