@@ -70,8 +70,8 @@ export default function SubmitPage() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Header */}
-      <div className="mb-8 fade-up">
-        <h1 className="text-3xl font-bold tracking-tight">Submit Standup</h1>
+      <div className="mb-6 sm:mb-8 fade-up">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Submit Standup</h1>
         <p className="mt-1.5 text-sm" style={{ color: "var(--text-secondary)" }}>
           Quick daily check-in — takes 30 seconds
         </p>
@@ -106,14 +106,14 @@ export default function SubmitPage() {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Member select */}
-        <div className="glass-static p-6 fade-up" style={{ animationDelay: "0.05s" }}>
+        <div className="glass-static p-4 sm:p-6 fade-up" style={{ animationDelay: "0.05s" }}>
           <label className="block text-sm font-semibold mb-4">Who are you?</label>
           {team.length === 0 ? (
             <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
               No team members yet. Ask your admin to add people.
             </p>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
               {team.map((member) => {
                 const active = selectedMember === member.id;
                 return (
@@ -149,7 +149,7 @@ export default function SubmitPage() {
         )}
 
         {/* Yesterday */}
-        <div className="glass-static p-6 fade-up" style={{ animationDelay: "0.1s" }}>
+        <div className="glass-static p-4 sm:p-6 fade-up" style={{ animationDelay: "0.1s" }}>
           <label className="flex items-center gap-2 text-sm font-semibold mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
             What did you do yesterday?
@@ -165,7 +165,7 @@ export default function SubmitPage() {
         </div>
 
         {/* Today */}
-        <div className="glass-static p-6 fade-up" style={{ animationDelay: "0.15s" }}>
+        <div className="glass-static p-4 sm:p-6 fade-up" style={{ animationDelay: "0.15s" }}>
           <label className="flex items-center gap-2 text-sm font-semibold mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
             What are you working on today?
@@ -181,7 +181,7 @@ export default function SubmitPage() {
         </div>
 
         {/* Blockers */}
-        <div className="glass-static p-6 fade-up" style={{ animationDelay: "0.2s" }}>
+        <div className="glass-static p-4 sm:p-6 fade-up" style={{ animationDelay: "0.2s" }}>
           <label className="flex items-center gap-2 text-sm font-semibold mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-white/30" />
             Any blockers?

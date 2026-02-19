@@ -49,8 +49,8 @@ export default function FeedPage() {
   return (
     <div className="max-w-3xl mx-auto">
       {/* Header */}
-      <div className="mb-8 fade-up">
-        <h1 className="text-3xl font-bold tracking-tight">Team Feed</h1>
+      <div className="mb-6 sm:mb-8 fade-up">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Team Feed</h1>
         <p className="mt-1.5 text-sm" style={{ color: "var(--text-secondary)" }}>
           Browse standup updates by date
         </p>
@@ -118,7 +118,7 @@ export default function FeedPage() {
           {sorted.map((s, i) => (
             <div
               key={s.id}
-              className="glass p-6 fade-up"
+              className="glass p-4 sm:p-6 fade-up"
               style={{
                 animationDelay: `${0.1 + i * 0.06}s`,
                 borderColor: s.blockers?.trim() ? "rgba(255,255,255,0.1)" : undefined,

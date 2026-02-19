@@ -50,9 +50,9 @@ export default function Dashboard() {
           <div className="skeleton h-8 w-48 mb-2" />
           <div className="skeleton h-4 w-72" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="skeleton h-28 rounded-2xl" />
+            <div key={i} className="skeleton h-24 sm:h-28 rounded-2xl" />
           ))}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -66,15 +66,15 @@ export default function Dashboard() {
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header */}
-      <div className="mb-8 fade-up">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+      <div className="mb-6 sm:mb-8 fade-up">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="mt-1.5 text-sm" style={{ color: "var(--text-secondary)" }}>
           {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
         </p>
       </div>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
         <StatCard label="Team Size" value={team.length.toString()} icon="👥" delay={0} />
         <StatCard label="Submitted Today" value={`${submitted.size}/${team.length}`} icon="✅" delay={1} />
         <StatCard
@@ -229,7 +229,7 @@ function StatCard({ label, value, icon, delay, highlight }: {
 }) {
   return (
     <div
-      className="glass p-5 fade-up"
+      className="glass p-4 sm:p-5 fade-up"
       style={{
         animationDelay: `${delay * 0.05 + 0.05}s`,
         borderColor: highlight ? "rgba(255,255,255,0.12)" : undefined,
@@ -242,7 +242,7 @@ function StatCard({ label, value, icon, delay, highlight }: {
         </div>
         {highlight && <span className="w-2 h-2 rounded-full bg-white/40" />}
       </div>
-      <p className="text-2xl font-bold tracking-tight">{value}</p>
+      <p className="text-xl sm:text-2xl font-bold tracking-tight">{value}</p>
       <p className="text-xs mt-1 font-medium" style={{ color: "var(--text-secondary)" }}>{label}</p>
     </div>
   );

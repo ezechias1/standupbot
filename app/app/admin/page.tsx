@@ -71,8 +71,8 @@ export default function AdminPage() {
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header */}
-      <div className="mb-8 fade-up">
-        <h1 className="text-3xl font-bold tracking-tight">Admin Panel</h1>
+      <div className="mb-6 sm:mb-8 fade-up">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Admin Panel</h1>
         <p className="mt-1.5 text-sm" style={{ color: "var(--text-secondary)" }}>
           Manage your team and generate AI summaries
         </p>
@@ -80,7 +80,7 @@ export default function AdminPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Team management */}
-        <div className="glass-static p-6 fade-up" style={{ animationDelay: "0.05s" }}>
+        <div className="glass-static p-4 sm:p-6 fade-up" style={{ animationDelay: "0.05s" }}>
           <h2 className="text-base font-semibold mb-5 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-white" />
             Team Members
@@ -88,21 +88,23 @@ export default function AdminPage() {
           </h2>
 
           {/* Add member form */}
-          <div className="flex gap-2 mb-5">
-            <input
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              placeholder="Name"
-              className="input flex-1 px-3.5 py-2.5 text-sm"
-              onKeyDown={(e) => e.key === "Enter" && addMember()}
-            />
-            <input
-              value={newRole}
-              onChange={(e) => setNewRole(e.target.value)}
-              placeholder="Role"
-              className="input w-32 px-3.5 py-2.5 text-sm"
-              onKeyDown={(e) => e.key === "Enter" && addMember()}
-            />
+          <div className="flex flex-col sm:flex-row gap-2 mb-5">
+            <div className="flex gap-2 flex-1">
+              <input
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="Name"
+                className="input flex-1 px-3.5 py-2.5 text-sm"
+                onKeyDown={(e) => e.key === "Enter" && addMember()}
+              />
+              <input
+                value={newRole}
+                onChange={(e) => setNewRole(e.target.value)}
+                placeholder="Role"
+                className="input flex-1 sm:w-32 sm:flex-none px-3.5 py-2.5 text-sm"
+                onKeyDown={(e) => e.key === "Enter" && addMember()}
+              />
+            </div>
             <button
               onClick={addMember}
               disabled={adding || !newName.trim()}
@@ -136,7 +138,7 @@ export default function AdminPage() {
                 </div>
                 <button
                   onClick={() => deleteMember(member.id)}
-                  className="text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                  className="text-xs px-3 py-1.5 rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all"
                   style={{
                     background: "rgba(255,255,255,0.04)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -157,7 +159,7 @@ export default function AdminPage() {
         </div>
 
         {/* AI Summary */}
-        <div className="glass-static p-6 fade-up" style={{ animationDelay: "0.1s" }}>
+        <div className="glass-static p-4 sm:p-6 fade-up" style={{ animationDelay: "0.1s" }}>
           <h2 className="text-base font-semibold mb-5 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
             AI Summary
