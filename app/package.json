@@ -9,6 +9,7 @@
     "seed": "npx tsx scripts/seed.ts"
   },
   "dependencies": {
+    "@upstash/redis": "^1.36.2",
     "groq-sdk": "^0.8.0",
     "next": "^15.1.0",
     "react": "^19.0.0",

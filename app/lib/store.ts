@@ -1,107 +1,75 @@
-import fs from "fs";
-import path from "path";
-import type { Store, TeamMember, Standup, DailySummary } from "./types";
+import { Redis } from "@upstash/redis";
+import type { TeamMember, Standup, DailySummary } from "./types";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const STORE_PATH = path.join(DATA_DIR, "store.json");
-
-function ensureStore(): Store {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  if (!fs.existsSync(STORE_PATH)) {
-    const empty: Store = { team: [], standups: [], summaries: [] };
-    fs.writeFileSync(STORE_PATH, JSON.stringify(empty, null, 2));
-    return empty;
+// Lazy initialization — avoids build-time errors when env vars aren't available
+let redis: Redis | null = null;
+function getRedis(): Redis {
+  if (!redis) {
+    redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    });
   }
-  return JSON.parse(fs.readFileSync(STORE_PATH, "utf-8"));
-}
-
-function save(store: Store) {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2));
+  return redis;
 }
 
 // --- Team members ---
 
-export function getTeam(): TeamMember[] {
-  return ensureStore().team;
+export async function getTeam(): Promise<TeamMember[]> {
+  const data = await getRedis().get<TeamMember[]>("team");
+  return data || [];
 }
 
-export function addMember(member: TeamMember) {
-  const store = ensureStore();
-  store.team.push(member);
-  save(store);
+export async function addMember(member: TeamMember) {
+  const team = await getTeam();
+  team.push(member);
+  await getRedis().set("team", team);
 }
 
-export function removeMember(id: string) {
-  const store = ensureStore();
-  store.team = store.team.filter((m) => m.id !== id);
-  save(store);
+export async function removeMember(id: string) {
+  const team = await getTeam();
+  await getRedis().set("team", team.filter((m) => m.id !== id));
 }
 
 // --- Standups ---
 
-export function getStandups(date?: string): Standup[] {
-  const store = ensureStore();
-  if (date) return store.standups.filter((s) => s.date === date);
-  return store.standups;
+export async function getStandups(date?: string): Promise<Standup[]> {
+  const data = await getRedis().get<Standup[]>("standups");
+  const all = data || [];
+  if (date) return all.filter((s) => s.date === date);
+  return all;
 }
 
-export function getStandupsByMember(memberId: string): Standup[] {
-  return ensureStore().standups.filter((s) => s.memberId === memberId);
+export async function getStandupsByMember(memberId: string): Promise<Standup[]> {
+  const all = await getStandups();
+  return all.filter((s) => s.memberId === memberId);
 }
 
-export function getStandupsInRange(startDate: string, endDate: string): Standup[] {
-  return ensureStore().standups.filter(
-    (s) => s.date >= startDate && s.date <= endDate
-  );
+export async function getStandupsInRange(startDate: string, endDate: string): Promise<Standup[]> {
+  const all = await getStandups();
+  return all.filter((s) => s.date >= startDate && s.date <= endDate);
 }
 
-export function addStandup(standup: Standup) {
-  const store = ensureStore();
+export async function addStandup(standup: Standup) {
+  const all = await getStandups();
   // Replace if same member already submitted for this date
-  store.standups = store.standups.filter(
+  const filtered = all.filter(
     (s) => !(s.memberId === standup.memberId && s.date === standup.date)
   );
-  store.standups.push(standup);
-  save(store);
+  filtered.push(standup);
+  await getRedis().set("standups", filtered);
 }
 
 // --- Summaries ---
 
-export function getSummary(date: string): DailySummary | undefined {
-  return ensureStore().summaries.find((s) => s.date === date);
+export async function getSummary(date: string): Promise<DailySummary | undefined> {
+  const data = await getRedis().get<DailySummary[]>("summaries");
+  return (data || []).find((s) => s.date === date);
 }
 
-export function saveSummary(summary: DailySummary) {
-  const store = ensureStore();
-  store.summaries = store.summaries.filter((s) => s.date !== summary.date);
-  store.summaries.push(summary);
-  save(store);
-}
-
-// --- Stats ---
-
-export function getMemberStreak(memberId: string): number {
-  const standups = getStandupsByMember(memberId);
-  if (standups.length === 0) return 0;
-
-  const dates = [...new Set(standups.map((s) => s.date))].sort().reverse();
-  let streak = 0;
-  const today = new Date();
-
-  for (let i = 0; i < dates.length; i++) {
-    const expected = new Date(today);
-    expected.setDate(expected.getDate() - i);
-    // Skip weekends
-    while (expected.getDay() === 0 || expected.getDay() === 6) {
-      expected.setDate(expected.getDate() - 1);
-    }
-    const expectedStr = expected.toISOString().split("T")[0];
-    if (dates.includes(expectedStr)) {
-      streak++;
-    } else {
-      break;
-    }
-  }
-  return streak;
+export async function saveSummary(summary: DailySummary) {
+  const data = await getRedis().get<DailySummary[]>("summaries");
+  const all = (data || []).filter((s) => s.date !== summary.date);
+  all.push(summary);
+  await getRedis().set("summaries", all);
 }

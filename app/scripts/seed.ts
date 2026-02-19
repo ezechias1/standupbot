@@ -1,10 +1,13 @@
-import fs from "fs";
-import path from "path";
+import { Redis } from "@upstash/redis";
 import { v4 as uuid } from "uuid";
-import type { Store } from "../lib/types";
+import * as dotenv from "dotenv";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const STORE_PATH = path.join(DATA_DIR, "store.json");
+dotenv.config({ path: ".env.local" });
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
 
 const today = new Date().toISOString().split("T")[0];
 const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
@@ -18,7 +21,6 @@ const team = [
 ];
 
 const standups = [
-  // Yesterday's standups
   {
     id: uuid(), memberId: team[0].id, memberName: team[0].name, memberAvatar: team[0].avatar,
     yesterday: "Set up the project repo and configured CI/CD pipeline",
@@ -47,8 +49,6 @@ const standups = [
     blockers: "Need design review before sprint planning",
     date: yesterday, submittedAt: new Date(yesterday + "T09:05:00").toISOString(),
   },
-
-  // Today's standups
   {
     id: uuid(), memberId: team[0].id, memberName: team[0].name, memberAvatar: team[0].avatar,
     yesterday: "Finished the landing page hero section and responsive nav",
@@ -72,12 +72,15 @@ const standups = [
   },
 ];
 
-const store: Store = { team, standups, summaries: [] };
+async function seed() {
+  await redis.set("team", team);
+  await redis.set("standups", standups);
+  await redis.set("summaries", []);
 
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2));
+  console.log("✅ Seeded to Upstash Redis!");
+  console.log(`   ${team.length} team members`);
+  console.log(`   ${standups.length} standups (${standups.filter(s => s.date === yesterday).length} yesterday, ${standups.filter(s => s.date === today).length} today)`);
+  console.log(`   Marcus (Designer) and James (DevOps) haven't submitted today`);
+}
 
-console.log("✅ Seeded successfully!");
-console.log(`   ${team.length} team members`);
-console.log(`   ${standups.length} standups (${standups.filter(s => s.date === yesterday).length} yesterday, ${standups.filter(s => s.date === today).length} today)`);
-console.log(`   Note: Marcus (Designer) and James (DevOps) haven't submitted today — dashboard will show them as pending`);
+seed().catch(console.error);

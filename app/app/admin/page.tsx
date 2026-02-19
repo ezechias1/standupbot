@@ -82,7 +82,7 @@ export default function AdminPage() {
         {/* Team management */}
         <div className="glass-static p-6 fade-up" style={{ animationDelay: "0.05s" }}>
           <h2 className="text-base font-semibold mb-5 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--accent)" }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-white" />
             Team Members
             <span className="badge badge-success ml-auto">{team.length} members</span>
           </h2>
@@ -109,7 +109,7 @@ export default function AdminPage() {
               className="btn-primary px-5 py-2.5 text-sm"
             >
               {adding ? (
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full spin-slow inline-block" />
+                <span className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full spin-slow inline-block" />
               ) : (
                 "Add"
               )}
@@ -138,9 +138,9 @@ export default function AdminPage() {
                   onClick={() => deleteMember(member.id)}
                   className="text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
                   style={{
-                    background: "rgba(255,107,107,0.08)",
-                    border: "1px solid rgba(255,107,107,0.15)",
-                    color: "#ff8a8a",
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    color: "#999",
                   }}
                 >
                   Remove
@@ -159,7 +159,7 @@ export default function AdminPage() {
         {/* AI Summary */}
         <div className="glass-static p-6 fade-up" style={{ animationDelay: "0.1s" }}>
           <h2 className="text-base font-semibold mb-5 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--success)" }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
             AI Summary
           </h2>
 
@@ -195,7 +195,7 @@ export default function AdminPage() {
               >
                 {summaryLoading ? (
                   <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full spin-slow" />
+                    <span className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full spin-slow" />
                     <span>Analyzing...</span>
                   </span>
                 ) : (
@@ -215,7 +215,7 @@ export default function AdminPage() {
           {summaryLoading && (
             <div className="text-center py-10 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
-                style={{ background: "var(--accent-glow)", border: "1px solid rgba(124,108,240,0.15)" }}>
+                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
                 <span className="text-2xl spin-slow inline-block">🤖</span>
               </div>
               <p className="font-medium text-sm">AI is analyzing standups...</p>

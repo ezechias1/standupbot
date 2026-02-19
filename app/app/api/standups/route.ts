@@ -6,7 +6,7 @@ import type { Standup } from "@/lib/types";
 // GET /api/standups?date=YYYY-MM-DD
 export async function GET(req: NextRequest) {
   const date = req.nextUrl.searchParams.get("date") || undefined;
-  const standups = getStandups(date);
+  const standups = await getStandups(date);
   return NextResponse.json(standups);
 }
 
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const team = getTeam();
+    const team = await getTeam();
     const member = team.find((m) => m.id === memberId);
     if (!member) {
       return NextResponse.json({ error: "Team member not found" }, { status: 404 });
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       submittedAt: now.toISOString(),
     };
 
-    addStandup(standup);
+    await addStandup(standup);
     return NextResponse.json(standup, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });

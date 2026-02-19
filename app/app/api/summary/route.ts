@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     const startStr = start.toISOString().split("T")[0];
     const endStr = end.toISOString().split("T")[0];
 
-    const standups = getStandupsInRange(startStr, endStr);
+    const standups = await getStandupsInRange(startStr, endStr);
     const summary = await generateWeeklySummary(standups, startStr, endStr);
     return NextResponse.json({ type: "weekly", startDate: startStr, endDate: endStr, summary });
   }
@@ -24,12 +24,12 @@ export async function GET(req: NextRequest) {
   const targetDate = date || new Date().toISOString().split("T")[0];
 
   // Check cache
-  const cached = getSummary(targetDate);
+  const cached = await getSummary(targetDate);
   if (cached) {
     return NextResponse.json({ type: "daily", date: targetDate, summary: cached.summary, cached: true });
   }
 
-  const standups = getStandups(targetDate);
+  const standups = await getStandups(targetDate);
   if (standups.length === 0) {
     return NextResponse.json({ type: "daily", date: targetDate, summary: "No standups submitted for this date.", cached: false });
   }
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
   const summary = await generateDailySummary(standups, targetDate);
 
   // Cache it
-  saveSummary({ date: targetDate, summary, generatedAt: new Date().toISOString() });
+  await saveSummary({ date: targetDate, summary, generatedAt: new Date().toISOString() });
 
   return NextResponse.json({ type: "daily", date: targetDate, summary, cached: false });
 }

@@ -7,7 +7,7 @@ const AVATARS = ["🧑‍💻", "👩‍💼", "👨‍🔧", "👩‍🎨", "�
 
 // GET /api/team
 export async function GET() {
-  const team = getTeam();
+  const team = await getTeam();
   return NextResponse.json(team);
 }
 
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "name is required" }, { status: 400 });
     }
 
-    const team = getTeam();
+    const team = await getTeam();
     const member: TeamMember = {
       id: uuid(),
       name,
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       joinedAt: new Date().toISOString(),
     };
 
-    addMember(member);
+    await addMember(member);
     return NextResponse.json(member, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
@@ -43,6 +43,6 @@ export async function DELETE(req: NextRequest) {
   if (!id) {
     return NextResponse.json({ error: "id is required" }, { status: 400 });
   }
-  removeMember(id);
+  await removeMember(id);
   return NextResponse.json({ success: true });
 }
