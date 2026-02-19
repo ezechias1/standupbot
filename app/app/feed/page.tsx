@@ -34,7 +34,6 @@ export default function FeedPage() {
     ? standups.filter((s) => s.blockers && s.blockers.trim() !== "")
     : standups;
 
-  // Sort by submission time, newest first
   const sorted = [...filtered].sort(
     (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
   );
@@ -45,52 +44,54 @@ export default function FeedPage() {
     setSelectedDate(d.toISOString().split("T")[0]);
   }
 
+  const isToday = selectedDate === new Date().toISOString().split("T")[0];
+
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Team Feed</h1>
-        <p style={{ color: "var(--text-secondary)" }} className="mt-1">
+      {/* Header */}
+      <div className="mb-8 fade-up">
+        <h1 className="text-3xl font-bold tracking-tight">Team Feed</h1>
+        <p className="mt-1.5 text-sm" style={{ color: "var(--text-secondary)" }}>
           Browse standup updates by date
         </p>
       </div>
 
       {/* Date picker + filter */}
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3 fade-up" style={{ animationDelay: "0.05s" }}>
         <div className="flex items-center gap-2">
-          <button onClick={() => changeDate(-1)} className="px-3 py-1.5 rounded-lg text-sm font-medium"
-            style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+          <button onClick={() => changeDate(-1)} className="btn-ghost px-3 py-2 text-sm font-medium">
             ←
           </button>
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="px-3 py-1.5 rounded-lg text-sm"
-            style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)", colorScheme: "dark" }}
+            className="input px-3 py-2 text-sm"
+            style={{ colorScheme: "dark" }}
           />
-          <button onClick={() => changeDate(1)} className="px-3 py-1.5 rounded-lg text-sm font-medium"
-            style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+          <button onClick={() => changeDate(1)} className="btn-ghost px-3 py-2 text-sm font-medium">
             →
           </button>
-          <button
-            onClick={() => setSelectedDate(new Date().toISOString().split("T")[0])}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium"
-            style={{ background: "var(--accent)", color: "white" }}
-          >
-            Today
-          </button>
+          {!isToday && (
+            <button
+              onClick={() => setSelectedDate(new Date().toISOString().split("T")[0])}
+              className="btn-primary px-3 py-2 text-xs"
+            >
+              Today
+            </button>
+          )}
         </div>
 
-        <div className="flex gap-1 p-1 rounded-lg" style={{ background: "var(--bg-card)" }}>
+        <div className="toggle-group">
           <button
             onClick={() => setFilter("all")}
-            className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${filter === "all" ? "nav-active" : ""}`}
+            className={`toggle-item ${filter === "all" ? "toggle-active" : ""}`}
           >
             All ({standups.length})
           </button>
           <button
             onClick={() => setFilter("blockers")}
-            className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${filter === "blockers" ? "nav-active" : ""}`}
+            className={`toggle-item ${filter === "blockers" ? "toggle-active" : ""}`}
           >
             Blockers ({standups.filter((s) => s.blockers?.trim()).length})
           </button>
@@ -99,12 +100,16 @@ export default function FeedPage() {
 
       {/* Feed */}
       {loading ? (
-        <div className="text-center py-12" style={{ color: "var(--text-secondary)" }}>Loading...</div>
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="skeleton h-44 rounded-2xl" />
+          ))}
+        </div>
       ) : sorted.length === 0 ? (
-        <div className="text-center py-16 rounded-xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-          <p className="text-4xl mb-3">📭</p>
-          <p className="font-medium">No standups for this date</p>
-          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+        <div className="glass text-center py-16 fade-up">
+          <p className="text-5xl mb-4">📭</p>
+          <p className="font-semibold text-lg">No standups for this date</p>
+          <p className="text-sm mt-2" style={{ color: "var(--text-secondary)" }}>
             {filter === "blockers" ? "No blockers reported — great!" : "Nobody has submitted yet."}
           </p>
         </div>
@@ -113,42 +118,49 @@ export default function FeedPage() {
           {sorted.map((s, i) => (
             <div
               key={s.id}
-              className="rounded-xl p-5 fade-in"
+              className="glass p-6 fade-up"
               style={{
-                background: "var(--bg-card)",
-                border: `1px solid ${s.blockers?.trim() ? "rgba(231,76,60,0.2)" : "var(--border)"}`,
-                animationDelay: `${i * 50}ms`,
+                animationDelay: `${0.1 + i * 0.06}s`,
+                borderColor: s.blockers?.trim() ? "rgba(255,255,255,0.1)" : undefined,
               }}
             >
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-2xl">{s.memberAvatar}</span>
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
+                  style={{ background: "rgba(255,255,255,0.04)" }}>
+                  {s.memberAvatar}
+                </div>
                 <div>
                   <p className="font-semibold text-sm">{s.memberName}</p>
-                  <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                  <p className="text-[11px]" style={{ color: "var(--text-secondary)" }}>
                     {new Date(s.submittedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </div>
                 {s.blockers?.trim() && (
-                  <span className="ml-auto text-xs font-medium px-2 py-1 rounded-full text-red-300 blocker-pulse"
-                    style={{ background: "rgba(231,76,60,0.15)" }}>
-                    Blocked
-                  </span>
+                  <span className="badge badge-danger blocker-pulse ml-auto">Blocked</span>
                 )}
               </div>
 
-              <div className="space-y-3">
-                <div className="p-3 rounded-lg" style={{ background: "var(--bg-secondary)" }}>
-                  <p className="text-xs font-medium mb-1" style={{ color: "var(--accent-light)" }}>Yesterday</p>
-                  <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{s.yesterday}</p>
+              {/* Content */}
+              <div className="space-y-2.5">
+                <div className="p-3.5 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-secondary)" }}>
+                    Yesterday
+                  </p>
+                  <p className="text-sm leading-relaxed" style={{ color: "#ccc" }}>{s.yesterday}</p>
                 </div>
-                <div className="p-3 rounded-lg" style={{ background: "var(--bg-secondary)" }}>
-                  <p className="text-xs font-medium mb-1" style={{ color: "var(--success)" }}>Today</p>
-                  <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{s.today}</p>
+                <div className="p-3.5 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-secondary)" }}>
+                    Today
+                  </p>
+                  <p className="text-sm leading-relaxed" style={{ color: "#ccc" }}>{s.today}</p>
                 </div>
                 {s.blockers?.trim() && (
-                  <div className="p-3 rounded-lg" style={{ background: "rgba(231,76,60,0.06)" }}>
-                    <p className="text-xs font-medium mb-1" style={{ color: "var(--danger)" }}>Blocker</p>
-                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{s.blockers}</p>
+                  <div className="p-3.5 rounded-xl" style={{ background: "rgba(255,255,255,0.03)" }}>
+                    <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "#999" }}>
+                      Blocker
+                    </p>
+                    <p className="text-sm leading-relaxed" style={{ color: "#ccc" }}>{s.blockers}</p>
                   </div>
                 )}
               </div>

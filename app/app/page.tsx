@@ -45,69 +45,89 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-lg" style={{ color: "var(--text-secondary)" }}>Loading dashboard...</div>
+      <div className="max-w-5xl mx-auto">
+        <div className="mb-8">
+          <div className="skeleton h-8 w-48 mb-2" />
+          <div className="skeleton h-4 w-72" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="skeleton h-28 rounded-2xl" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="skeleton h-64 rounded-2xl" />
+          <div className="skeleton h-64 rounded-2xl" />
+        </div>
       </div>
     );
   }
 
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p style={{ color: "var(--text-secondary)" }} className="mt-1">
+      {/* Header */}
+      <div className="mb-8 fade-up">
+        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <p className="mt-1.5 text-sm" style={{ color: "var(--text-secondary)" }}>
           {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
         </p>
       </div>
 
       {/* Stats cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Team Size" value={team.length.toString()} icon="👥" />
-        <StatCard label="Submitted Today" value={`${submitted.size}/${team.length}`} icon="✅" />
+        <StatCard label="Team Size" value={team.length.toString()} icon="👥" delay={0} />
+        <StatCard label="Submitted Today" value={`${submitted.size}/${team.length}`} icon="✅" delay={1} />
         <StatCard
           label="Submission Rate"
           value={`${submissionRate}%`}
           icon="📈"
-          accent={submissionRate === 100}
+          delay={2}
+          highlight={submissionRate === 100}
         />
         <StatCard
           label="Active Blockers"
           value={blockers.length.toString()}
           icon="🚧"
-          danger={blockers.length > 0}
+          delay={3}
+          highlight={blockers.length > 0}
         />
       </div>
 
       {/* Two column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Who submitted */}
-        <div className="rounded-xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-          <h2 className="text-lg font-semibold mb-4">Team Status</h2>
-          <div className="space-y-3">
-            {team.map((member) => {
+        {/* Team status */}
+        <div className="glass p-6 fade-up" style={{ animationDelay: "0.15s" }}>
+          <h2 className="text-base font-semibold mb-5 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-white" />
+            Team Status
+          </h2>
+          <div className="space-y-2.5">
+            {team.map((member, i) => {
               const done = submitted.has(member.id);
               return (
-                <div key={member.id} className="flex items-center justify-between fade-in">
+                <div
+                  key={member.id}
+                  className="flex items-center justify-between p-3 rounded-xl transition-all hover:bg-white/[0.03] fade-up"
+                  style={{ animationDelay: `${0.2 + i * 0.05}s` }}
+                >
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{member.avatar}</span>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
+                      style={{ background: "rgba(255,255,255,0.04)" }}>
+                      {member.avatar}
+                    </div>
                     <div>
                       <p className="font-medium text-sm">{member.name}</p>
                       <p className="text-xs" style={{ color: "var(--text-secondary)" }}>{member.role}</p>
                     </div>
                   </div>
-                  <span
-                    className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                      done ? "text-green-300" : "text-yellow-300"
-                    }`}
-                    style={{ background: done ? "rgba(0,184,148,0.15)" : "rgba(253,203,110,0.15)" }}
-                  >
+                  <span className={`badge ${done ? "badge-success" : "badge-warning"}`}>
                     {done ? "Submitted" : "Pending"}
                   </span>
                 </div>
               );
             })}
             {team.length === 0 && (
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+              <p className="text-sm text-center py-6" style={{ color: "var(--text-secondary)" }}>
                 No team members yet. Go to Admin to add people.
               </p>
             )}
@@ -115,65 +135,76 @@ export default function Dashboard() {
         </div>
 
         {/* Blockers */}
-        <div className="rounded-xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+        <div className="glass p-6 fade-up" style={{ animationDelay: "0.2s" }}>
+          <h2 className="text-base font-semibold mb-5 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: blockers.length > 0 ? "#888" : "#555" }} />
             Blockers
             {blockers.length > 0 && (
-              <span className="blocker-pulse text-xs font-medium px-2 py-0.5 rounded-full text-red-300"
-                style={{ background: "rgba(231,76,60,0.15)" }}>
-                {blockers.length} active
-              </span>
+              <span className="badge badge-danger blocker-pulse ml-1">{blockers.length} active</span>
             )}
           </h2>
           <div className="space-y-3">
-            {blockers.map((s) => (
-              <div key={s.id} className="p-3 rounded-lg fade-in" style={{ background: "rgba(231,76,60,0.08)", border: "1px solid rgba(231,76,60,0.2)" }}>
-                <div className="flex items-center gap-2 mb-1">
-                  <span>{s.memberAvatar}</span>
-                  <span className="font-medium text-sm">{s.memberName}</span>
+            {blockers.map((s, i) => (
+              <div
+                key={s.id}
+                className="p-4 rounded-xl fade-up"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  animationDelay: `${0.25 + i * 0.05}s`,
+                }}
+              >
+                <div className="flex items-center gap-2.5 mb-2">
+                  <span className="text-lg">{s.memberAvatar}</span>
+                  <span className="font-semibold text-sm">{s.memberName}</span>
                 </div>
-                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{s.blockers}</p>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{s.blockers}</p>
               </div>
             ))}
             {blockers.length === 0 && (
-              <div className="text-center py-6">
-                <p className="text-3xl mb-2">🎉</p>
-                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>No blockers today!</p>
+              <div className="text-center py-8 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
+                <p className="text-4xl mb-3">🎉</p>
+                <p className="font-medium text-sm">No blockers today!</p>
+                <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>The team is unblocked and rolling</p>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Today's updates preview */}
+      {/* Today's updates */}
       {standups.length > 0 && (
-        <div className="mt-6 rounded-xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-          <h2 className="text-lg font-semibold mb-4">Today&apos;s Updates</h2>
-          <div className="space-y-4">
-            {standups.map((s) => (
-              <div key={s.id} className="p-4 rounded-lg fade-in" style={{ background: "var(--bg-secondary)" }}>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">{s.memberAvatar}</span>
-                  <span className="font-semibold text-sm">{s.memberName}</span>
-                  <span className="text-xs ml-auto" style={{ color: "var(--text-secondary)" }}>
-                    {new Date(s.submittedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                  </span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                  <div>
-                    <p className="text-xs font-medium mb-1" style={{ color: "var(--accent-light)" }}>Yesterday</p>
-                    <p style={{ color: "var(--text-secondary)" }}>{s.yesterday}</p>
+        <div className="glass p-6 mt-6 fade-up" style={{ animationDelay: "0.25s" }}>
+          <h2 className="text-base font-semibold mb-5 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-white" />
+            Today&apos;s Updates
+          </h2>
+          <div className="space-y-3">
+            {standups.map((s, i) => (
+              <div
+                key={s.id}
+                className="p-5 rounded-xl transition-all hover:bg-white/[0.02] fade-up"
+                style={{ background: "rgba(255,255,255,0.02)", animationDelay: `${0.3 + i * 0.05}s` }}
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg"
+                    style={{ background: "rgba(255,255,255,0.04)" }}>
+                    {s.memberAvatar}
                   </div>
                   <div>
-                    <p className="text-xs font-medium mb-1" style={{ color: "var(--success)" }}>Today</p>
-                    <p style={{ color: "var(--text-secondary)" }}>{s.today}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium mb-1" style={{ color: s.blockers ? "var(--danger)" : "var(--text-secondary)" }}>
-                      Blockers
+                    <span className="font-semibold text-sm">{s.memberName}</span>
+                    <p className="text-[11px]" style={{ color: "var(--text-secondary)" }}>
+                      {new Date(s.submittedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </p>
-                    <p style={{ color: "var(--text-secondary)" }}>{s.blockers || "None"}</p>
                   </div>
+                  {s.blockers?.trim() && (
+                    <span className="badge badge-danger blocker-pulse ml-auto">Blocked</span>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <UpdateCell label="Yesterday" text={s.yesterday} />
+                  <UpdateCell label="Today" text={s.today} />
+                  <UpdateCell label="Blockers" text={s.blockers || "None"} />
                 </div>
               </div>
             ))}
@@ -184,21 +215,35 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ label, value, icon, accent, danger }: {
-  label: string; value: string; icon: string; accent?: boolean; danger?: boolean;
+function UpdateCell({ label, text }: { label: string; text: string }) {
+  return (
+    <div className="p-3 rounded-lg" style={{ background: "rgba(255,255,255,0.02)" }}>
+      <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-secondary)" }}>{label}</p>
+      <p className="text-sm leading-relaxed" style={{ color: "#ccc" }}>{text}</p>
+    </div>
+  );
+}
+
+function StatCard({ label, value, icon, delay, highlight }: {
+  label: string; value: string; icon: string; delay: number; highlight?: boolean;
 }) {
   return (
-    <div className="rounded-xl p-4" style={{
-      background: "var(--bg-card)",
-      border: `1px solid ${danger ? "rgba(231,76,60,0.3)" : accent ? "rgba(108,92,231,0.3)" : "var(--border)"}`,
-    }}>
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-2xl">{icon}</span>
-        {danger && <span className="blocker-pulse w-2 h-2 rounded-full bg-red-400" />}
-        {accent && <span className="w-2 h-2 rounded-full bg-green-400" />}
+    <div
+      className="glass p-5 fade-up"
+      style={{
+        animationDelay: `${delay * 0.05 + 0.05}s`,
+        borderColor: highlight ? "rgba(255,255,255,0.12)" : undefined,
+      }}
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
+          style={{ background: "rgba(255,255,255,0.04)" }}>
+          {icon}
+        </div>
+        {highlight && <span className="w-2 h-2 rounded-full bg-white/40" />}
       </div>
-      <p className="text-2xl font-bold">{value}</p>
-      <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>{label}</p>
+      <p className="text-2xl font-bold tracking-tight">{value}</p>
+      <p className="text-xs mt-1 font-medium" style={{ color: "var(--text-secondary)" }}>{label}</p>
     </div>
   );
 }

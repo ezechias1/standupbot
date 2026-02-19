@@ -18,44 +18,74 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="flex min-h-screen">
         {/* Sidebar */}
-        <nav className="w-56 fixed h-screen flex flex-col border-r"
-          style={{ background: "var(--bg-secondary)", borderColor: "var(--border)" }}>
-          <div className="p-5 border-b" style={{ borderColor: "var(--border)" }}>
-            <h1 className="text-lg font-bold flex items-center gap-2">
-              🤖 StandupBot
-            </h1>
-            <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>
-              Daily team check-ins
-            </p>
+        <nav
+          className="w-60 fixed h-screen flex flex-col z-50"
+          style={{
+            background: "rgba(5,5,5,0.97)",
+            borderRight: "1px solid var(--border)",
+            backdropFilter: "blur(20px)",
+          }}
+        >
+          {/* Logo */}
+          <div className="p-6 pb-5">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center text-lg"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                🤖
+              </div>
+              <div>
+                <h1 className="text-base font-bold tracking-tight">StandupBot</h1>
+                <p className="text-[10px] tracking-wider uppercase" style={{ color: "var(--text-secondary)" }}>
+                  Team Check-ins
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="flex-1 p-3 flex flex-col gap-1">
+          {/* Divider */}
+          <div className="mx-4 h-px" style={{ background: "var(--border)" }} />
+
+          {/* Nav links */}
+          <div className="flex-1 p-3 pt-4 flex flex-col gap-1">
             {NAV_ITEMS.map((item) => {
               const active = pathname === item.href;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    active ? "nav-active" : "hover:bg-[var(--bg-hover)]"
+                  className={`nav-item flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium ${
+                    active ? "nav-active" : ""
                   }`}
                   style={!active ? { color: "var(--text-secondary)" } : {}}
                 >
-                  <span className="text-base">{item.icon}</span>
+                  <span className="text-base w-5 text-center">{item.icon}</span>
                   {item.label}
                 </Link>
               );
             })}
           </div>
 
-          <div className="p-4 border-t text-xs" style={{ borderColor: "var(--border)", color: "var(--text-secondary)" }}>
-            Built with Next.js + Groq AI
+          {/* Footer */}
+          <div className="p-4 mx-3 mb-3 rounded-xl" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <p className="text-[10px] font-medium" style={{ color: "var(--text-secondary)" }}>
+              Powered by
+            </p>
+            <p className="text-xs font-semibold mt-0.5 gradient-text">
+              Next.js + Groq AI
+            </p>
           </div>
         </nav>
 
         {/* Main content */}
-        <main className="ml-56 flex-1 p-8">
-          {children}
+        <main className="ml-60 flex-1 min-h-screen relative z-10">
+          <div className="p-8 max-w-[1200px]">
+            {children}
+          </div>
         </main>
       </body>
     </html>
