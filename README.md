@@ -1,6 +1,10 @@
-# 🤖 StandupBot — AI-Powered Team Standup Dashboard
+# StandupBot — AI-Powered Team Standup Dashboard
 
 StandupBot replaces your daily standup meetings with a sleek web app. Team members submit quick daily check-ins, managers see everything on a real-time dashboard, and AI generates smart summaries highlighting blockers, patterns, and action items.
+
+**[Live Demo](https://project-101-six.vercel.app)**
+
+![StandupBot](screenshot.png)
 
 ---
 
